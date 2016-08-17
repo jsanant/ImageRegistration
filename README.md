@@ -9,6 +9,6 @@ the normalized mutual information.
 1. To align two test images after performing operations such as translation for rigid
 objects.
 
-2.For non-rigid objects we implement algorithms that learn by themselves and are
+2. For non-rigid objects we implement algorithms that learn by themselves and are
 able to identify distinct patterns in the images.
 
