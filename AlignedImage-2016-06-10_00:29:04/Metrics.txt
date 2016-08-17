@@ -1,0 +1,6 @@
+Path of Source Image = ./brain 1.png
+Path of Source Image = ./brain 2.png
+X-Offset = 5.0
+Y-Offset = -6.0
+Angle of Rotation = -33.0
+Normalised Mutual Information = 0.503923492661

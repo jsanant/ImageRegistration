@@ -1,0 +1,37 @@
+# Install dependencies:
+
+$ sudo apt-get install python-dev python-qt4 python-qt4-dev python-sip python-sip-dev build-essential gfortran libqt4-dev qt4-qmake libpq-dev libsqlite3-dev qt4-dev-tools qt4-doc unixodbc-dev pyqt4-dev-tools
+
+#Install SIP-4.16. Download the latest stable source code from here
+
+> https://riverbankcomputing.com/software/sip/download
+
+ ##And extract to a suitable location (e.g. ~/softwares). Get into the directory and execute the following
+
+ $ python config.py
+ $ make
+ $ sudo make install
+
+#Download and install PyQt-x11-gpl-4.10.4 (NOT the version PyQt-x11-gpl-4.11, which generates error during make)
+from here
+
+> http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.10.4/PyQt-x11-gpl-4.10.4.tar.gz/download 
+
+ ##And extract it to a suitable location (eg. ~/softwares). Get into the directory and execute following
+
+ $ python configure-ng.py
+ $ make
+ $ make install
+
+#Next test whether the installation has been done properly or not. Get into python
+
+$ python
+
+>>> import PyQt4
+
+#However, our cv  virtual environment is located in our home directory — thus to use PyQt4 within our cv environment,
+we first need to sym-link PyQt4 into the site-packages  directory of the cv  virtual environment:
+
+$ ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ~/.virtualenvs/cv/lib/python2.7/site-packages/
+
+$ ln -s /usr/lib/python2.7/dist-packages/sip.so ~/.virtualenvs/cv/lib/python2.7/site-packages/

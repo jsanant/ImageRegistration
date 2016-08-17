@@ -1,0 +1,185 @@
+### Step 1:
+
+Open up a terminal and update the APT package manager followed by upgrading any pre-installed packages:
+
+$ sudo apt-get update
+
+$ sudo apt-get upgrade
+
+### Step 2:
+
+Now we need to install our developer tools:
+
+$ sudo apt-get install build-essential cmake git pkg-config
+
+The pkg-config  is likely already installed, but be sure to include it just in case. We’ll be using git to pull down the OpenCV repositories from GitHub. The cmake  package is used to configure our build.
+
+### Step 3:
+
+OpenCV needs to be able to load various image file formats from disk, including JPEG, PNG, TIFF, etc. In order to load these image formats from disk, we’ll need our image I/O packages:
+
+$ sudo apt-get install libjpeg8-dev libtiff4-dev libjasper-dev libpng12-dev
+
+### Step 4:
+
+At this point, we have the ability to load a given image off of disk. But how do we display the actual image to our screen? The answer is the GTK development library, which the highgui  module of OpenCV depends on to guild Graphical User Interfaces (GUIs):
+
+$ sudo apt-get install libgtk2.0-dev
+
+### Step 5:
+
+We can load images using OpenCV, but what about processing video streams and accessing individual frames? We’ve got that covered here:
+
+$ sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+
+### Step 6:
+
+Install libraries that are used to optimize various routines inside of OpenCV:
+
+$ sudo apt-get install libatlas-base-dev gfortran
+
+### Step 7:
+
+Install pip, a Python package manager:
+
+$ wget https://bootstrap.pypa.io/get-pip.py
+
+$ sudo python get-pip.py
+
+### Step 8:
+
+Install [virtualenv](https://virtualenv.pypa.io/en/latest/) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.org/en/latest/). These two packages allow us to create **_separate Python environments_** for each project we are working on. While installing virtualenv  andvirtualenvwrapper  is **_not a __requirement _**to get OpenCV 3.0 and Python 2.7+ up and running on your Ubuntu system, **_I highly recommend it _**and the rest of this tutorial _**will assume you have them installed!**_
+
+$ sudo pip install virtualenv virtualenvwrapper
+
+$ sudo rm-rf~/.cache/pip
+
+
+Now that we have virtualenv  and virtualenvwrapper  installed, we need to update our~/.bashrc file:
+
+Use an editor such as gedit or vim or sublime to open the bashrc file:
+
+$ gedit ~/.bashrc
+
+
+Append the following lines to the file and save it.
+
+#virtualenv and virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+source/usr/local/bin/virtualenvwrapper.sh
+
+
+This quick update will ensure that both virtualenv and virtualenvwrapper are loaded each time you login.
+
+To make the changes to our ~/.bashrc  file take effect, you can either:
+(1) logout and log back in
+(2) close your current terminal window and open a new one
+(3) reload the contents of your ~/.bashrc  file by typing:
+
+$ source ~/.bashrc
+
+Lastly, we can create our cv virtual environment where we’ll be doing our computer vision development and OpenCV 3.0+ and Python 2.7+ installation:
+
+$ mkvirtualenv cv
+
+### Step 9:
+
+As I mentioned above, this tutorial covers how to install OpenCV 3.0 and Python 2.7+ (I’ll have a OpenCV 3.0 + Python 3 tutorial available later this month), so we’ll need to install our Python 2.7 development tools:
+
+$ sudo apt-get install python2.7-dev
+
+Since OpenCV represents images as multi-dimensional NumPy arrays, we better install[NumPy](http://www.numpy.org/) into our cv  virtual environment:
+
+$ pip install numpy
+
+### Step 10:
+
+Our environment is now all setup — we can proceed to change to our home directory, [pull down OpenCV from GitHub](https://github.com/Itseez/opencv), and checkout the 3.0.0  version:
+
+$ cd ~
+
+$ git clone https://github.com/Itseez/opencv.git
+
+$ cd opencv
+
+$ git checkout 3.0.0
+
+**Update (3 January 2016): **You can replace the 3.0.0  version with whatever the current release is (as of right now, it’s 3.1.0 ). Be sure to check [OpenCV.org](http://opencv.org/category/news) for information on the latest release._
+
+We also need the [opencv_contrib repo](https://github.com/itseez/opencv_contrib) as well. Without this repository, we won’t have access to standard keypoint detectors and local invariant descriptors (such as SIFT, SURF, etc.) that were available in the OpenCV 2.4.X version. We’ll also be missing out on some of the newer OpenCV 3.0 features like text detection in natural images:
+
+
+$ cd ~
+
+$ git clone https://github.com/Itseez/opencv_contrib.git
+
+$ cd opencv_contrib
+
+$ git checkout 3.0.0
+
+Again, make sure that you checkout the _**same version**_ for opencv_contrib  that you did foropencv  above, otherwise you could run into compilation errors.
+
+Time to setup the build:
+
+
+$ cd ~/opencv
+
+$ mkdir build
+
+$ cd build
+
+$ cmake -D CMAKE_BUILD_TYPE=RELEASE\
+
+	-D CMAKE_INSTALL_PREFIX=/usr/local\
+
+	-D INSTALL_C_EXAMPLES=ON\
+
+	-D INSTALL_PYTHON_EXAMPLES=ON\
+
+	-D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules\
+
+	-D BUILD_EXAMPLES=ON ..
+
+**Update (3 January 2016):** In order to build OpenCV 3.1.0 , you need to set -D INSTALL_C_EXAMPLES=OFF (rather than ON ) in the cmake  command.
+There is a bug in the OpenCV v3.1.0 CMake build script that can cause errors if you leave this switch on.
+Once you set this switch to off, CMake should run without a problem.***
+
+
+Now we can finally compile OpenCV:
+
+$ make -j4
+
+Where you can replace the '4' with the number of available cores on your processor to speedup the compilation.
+
+Assuming that OpenCV compiled without error, you can now install it on your Ubuntu system:
+
+$ sudo make install
+
+$ sudo ldconfig
+
+### Step 11:
+
+If you’ve reached this step without an error, OpenCV should now be installed in /usr/local/lib/python2.7/site-packages
+
+### However, our cv  virtual environment is located in our home directory — thus to use OpenCV within our cv environment,
+we first need to sym-link OpenCV into the site-packages  directory of the cv  virtual environment:
+
+$ cd ~/.virtualenvs/cv/lib/python2.7/site-packages/
+
+$ ln -s /usr/local/lib/python2.7/site-packages/cv2.so cv2.so
+
+### Step 12:
+
+**Congratulations! You have successfully installed OpenCV 3.0 with Python 2.7+ bindings on ****your Ubuntu system!**
+
+To confirm your installation, simply ensure that you are in the cv  virtual environment, followed by importing cv2 :
+
+$ workon cv
+
+$ python
+
+>>> import cv2
+
+>>> cv2.__version__
+
+'3.0.0'
